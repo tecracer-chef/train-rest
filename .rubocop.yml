@@ -1,0 +1,9 @@
+AllCops:
+  TargetRubyVersion: 2.6
+  Exclude:
+    - Guardfile
+    - Rakefile
+
+Style/RedundantSelf:
+  Exclude:
+    - lib/train-rest/auth_handler.rb
