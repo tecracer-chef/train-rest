@@ -30,8 +30,24 @@ module TrainPlugins
         components.to_s
       end
 
+      def inventory
+        # Faking it for Chef Target Mode only
+        OpenStruct.new({
+          name: "rest",
+          release: TrainPlugins::Rest::VERSION,
+          family_hierarchy: ["", "api"],
+          family: "api",
+          platform: "rest",
+          platform_version: 0,
+        })
+      end
+
+      alias os inventory
+
       def platform
-        force_platform!("rest", { endpoint: uri })
+        Train::Platforms.name("rest").in_family("api")
+
+        force_platform!("rest", { release: TrainPlugins::Rest::VERSION })
       end
 
       # User-faced API
@@ -100,7 +116,7 @@ module TrainPlugins
       end
 
       def auth_type
-        return options[:auth_type] if options[:auth_type]
+        return options[:auth_type].to_sym if options[:auth_type]
 
         :basic if options[:username] && options[:password]
       end

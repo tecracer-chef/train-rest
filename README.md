@@ -140,3 +140,35 @@ conn   = train.connection
 # Handles logout as well
 conn.close
 ```
+
+## Use with Redfish, Your Custom Resources and Chef Target Mode
+
+1. Set up a credentials file under `~/.chef/credentials` or `/etc/chef/credentials`:
+
+   ```toml
+   ['10.0.0.1']
+   endpoint = 'https://10.0.0.1/redfish/v1/'
+   username = 'user'
+   password = 'pass'
+   verify_ssl = false
+   auth_type = 'redfish'
+   ```
+
+1. Configure Chef to use the REST transport in `client.rb`:
+
+   ```toml
+   target_mode.protocol = "rest"
+   ```
+
+1. Write your custom resources for REST APIs
+1. Mark them up using the REST methods for target mode:
+
+   ```ruby
+   provides :rest_resource, target_mode: true, platform: 'rest'
+   ```
+
+1. Run against the defiend targets via Chef Target Mode:
+
+   ```shell
+   chef-client --local-mode --target 10.0.0.1 --runlist 'recipe[my-cookbook:setup]'
+   ```
