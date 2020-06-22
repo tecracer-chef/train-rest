@@ -13,6 +13,12 @@ module TrainPlugins
       def initialize(options)
         super(options)
 
+        # Plugin was called with an URI only
+        options[:endpoint] = options[:target].sub("rest://", "https://") unless options[:endpoint]
+
+        # Accept string (CLI) and boolean (API) options
+        options[:verify_ssl] = options[:verify_ssl].to_s == "false" ? false : true
+
         connect
       end
 
@@ -25,7 +31,7 @@ module TrainPlugins
       end
 
       def uri
-        components = URI.new(options[:endpoint])
+        components = URI(options[:endpoint])
         components.scheme = "rest"
         components.to_s
       end
@@ -35,7 +41,7 @@ module TrainPlugins
         OpenStruct.new({
           name: "rest",
           release: TrainPlugins::Rest::VERSION,
-          family_hierarchy: ["", "api"],
+          family_hierarchy: %w{rest api},
           family: "api",
           platform: "rest",
           platform_version: 0,
@@ -54,6 +60,7 @@ module TrainPlugins
 
       %i{get post put patch delete head}.each do |method|
         define_method(method) do |path, *parameters|
+          # TODO: "warning: Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call"
           request(path, method, *parameters)
         end
       end
@@ -139,11 +146,15 @@ module TrainPlugins
       end
 
       def login
+        logger.info format("REST Login via %s authentication handler", auth_type.to_s) if auth_type != :anonymous
+
         auth_handler.options = options
         auth_handler.login
       end
 
       def logout
+        logger.info format("REST Logout via %s authentication handler", auth_type.to_s) if auth_type != :anonymous
+
         auth_handler.logout
       end
     end

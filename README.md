@@ -119,14 +119,20 @@ conn   = train.connection
 conn.close
 ```
 
-Example for logging into a RedFish based system:
+Example for logging into a RedFish based system. Please note that the RedFish
+authentication handler will append `redfish/v1` to the endpoint automatically,
+if it is not present.
+
+Due to this, you can use RedFish systems either with a base URL like in the
+example below or with a full one. Your own code needs to match the style
+you choose.
 
 ```ruby
 require 'train-rest'
 
 # This will immediately do a login and add headers
 train  = Train.create('rest', {
-            endpoint: 'https://api.example.com/v1/',
+            endpoint: 'https://10.20.30.40',
             validate_ssl: false,
 
             auth_type: :redfish,
