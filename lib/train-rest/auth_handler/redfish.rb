@@ -13,7 +13,7 @@ module TrainPlugins
 
       def login
         response = connection.post(
-          "SessionService/Sessions/",
+          login_url,
           headers: {
             "Content-Type" => "application/json",
             "OData-Version" => "4.0",
@@ -24,10 +24,11 @@ module TrainPlugins
           }
         )
 
-        raise StandardError.new("Authentication with Redfish failed") unless response.code === 201
-
         @session_token = response.headers["x-auth-token"].first
         @logout_url = response.headers["location"].first
+
+      rescue ::RestClient::RequestFailed => err
+        raise StandardError.new("Authentication with Redfish failed: " + err.message)
       end
 
       def logout
@@ -38,6 +39,15 @@ module TrainPlugins
         return {} unless @session_token
 
         { "X-Auth-Token": @session_token }
+      end
+
+      private
+
+      # Prepend the RedFish base, if not a global setting in the connection URL
+      def login_url
+        return "SessionService/Sessions/" if options[:endpoint].include?("redfish/v1")
+
+        "redfish/v1/SessionService/Sessions/"
       end
     end
   end
