@@ -82,22 +82,32 @@ train  = Train.create('rest', {
 
 ## Request Methods
 
-This transport does not implement the `run_command` method, as there is no line-based protocol to execute commands against. Instead, it implements its own custom methods which suit REST interfaces. Trying to call this method will thrown an Exception.
+This transport does not implement the `run_command` method, as there is no
+line-based protocol to execute commands against. Instead, it implements its own
+custom methods which suit REST interfaces. Trying to call this method will
+throw an Exception.
 
 ### Generic Request
 
-The  `request` methods allows to send free-form requests against any defined or custom methods.
+The `request` methods allows to send free-form requests against any defined or
+custom methods.
 
-`request(path, method = :get, request_parameters: {}, data: nil, headers: {}, json_processing: true)`
+`request(path, method = :get, request_parameters: {}, data: nil, headers: {},
+json_processing: true)`
 
 - `path`: The path to request, which will be appended to the `endpoint`
 - `method`: The HTTP method in Ruby Symbol syntax
-- `request_parameters`: A hash of parameters to the `rest-client` request method for additional settings
-- `data`: Data for actions like `:post` or `:put`. Not all methods accept a data body.
+- `request_parameters`: A hash of parameters to the `rest-client` request
+  method for additional settings
+- `data`: Data for actions like `:post` or `:put`. Not all methods accept
+  a data body.
 - `headers`: Additional headers for the request
-- `json_processing`: If the response is a JSON and you want to receive a processed Hash/Array instead of text
+- `json_processing`: If the response is a JSON and you want to receive a
+  processed Hash/Array instead of text
 
-For `request_parameters` and `headers`, there is data mixed in to add authenticator responses, JSON processing etc. Please check the implementation in `connection.rb` for details
+For `request_parameters` and `headers`, there is data mixed in to add
+authenticator responses, JSON processing etc. Please check the
+implementation in `connection.rb` for details.
 
 ### Convenience Methods
 
