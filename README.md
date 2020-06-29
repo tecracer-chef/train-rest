@@ -60,6 +60,9 @@ The Redfish standard is defined in <http://www.dmtf.org/standards/redfish> and
 this handler does initial login, reuses the received session and logs out when
 closing the transport cleanly.
 
+Known vendors which implement RedFish based management for their systems include
+HPE, Dell, IBM, SuperMicro, Lenovo, Huawei and others.
+
 ## Debugging and use in Chef
 
 You can activate debugging by setting the `debug_rest` flag to `true'. Please
@@ -76,6 +79,36 @@ train  = Train.create('rest', {
             logger:     Chef::Log
          })
 ```
+
+## Request Methods
+
+This transport does not implement the `run_command` method, as there is no line-based protocol to execute commands against. Instead, it implements its own custom methods which suit REST interfaces. Trying to call this method will thrown an Exception.
+
+### Generic Request
+
+The  `request` methods allows to send free-form requests against any defined or custom methods.
+
+`request(path, method = :get, request_parameters: {}, data: nil, headers: {}, json_processing: true)`
+
+- `path`: The path to request, which will be appended to the `endpoint`
+- `method`: The HTTP method in Ruby Symbol syntax
+- `request_parameters`: A hash of parameters to the `rest-client` request method for additional settings
+- `data`: Data for actions like `:post` or `:put`. Not all methods accept a data body.
+- `headers`: Additional headers for the request
+- `json_processing`: If the response is a JSON and you want to receive a processed Hash/Array instead of text
+
+For `request_parameters` and `headers`, there is data mixed in to add authenticator responses, JSON processing etc. Please check the implementation in `connection.rb` for details
+
+### Convenience Methods
+
+Simplified wrappers are generated for the most common request types:
+
+- `delete(path, request_parameters: {}, headers: {}, json_processing: true)`
+- `head(path, request_parameters: {}, headers: {}, json_processing: true)`
+- `get(path, request_parameters: {}, headers: {}, json_processing: true)`
+- `post(path, request_parameters: {}, data: nil, headers: {}, json_processing: true)`
+- `put(path, request_parameters: {}, data: nil, headers: {}, json_processing: true)`
+- `patch(path, request_parameters: {}, data: nil, headers: {}, json_processing: true)`
 
 ## Example use
 
