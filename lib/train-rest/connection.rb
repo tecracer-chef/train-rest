@@ -19,7 +19,33 @@ module TrainPlugins
         # Accept string (CLI) and boolean (API) options
         options[:verify_ssl] = options[:verify_ssl].to_s == "false" ? false : true
 
+        setup_vcr
+
         connect
+      end
+
+      def setup_vcr
+        return unless options[:vcr_cassette]
+
+        require "vcr"
+
+        # TODO: Starts from "/" :(
+        library = options[:vcr_library]
+        match_on = options[:vcr_match_on].split.map(&:to_sym)
+
+        VCR.configure do |config|
+          config.cassette_library_dir = library
+          config.hook_into options[:vcr_hook_into]
+          config.default_cassette_options = {
+            record: options[:vcr_record].to_sym,
+            match_requests_on: match_on,
+          }
+        end
+
+        VCR.insert_cassette options[:vcr_cassette]
+      rescue LoadError
+        logger.fatal "Install the vcr gem to use HTTP(S) playback capability"
+        raise
       end
 
       def connect

@@ -20,7 +20,7 @@ rake install:local
 | Option               | Explanation                             | Default     |
 | -------------------- | --------------------------------------- | ----------- |
 | `endpoint`           | Endpoint of the REST API                | _required_  |
-| `validate_ssl`       | Check certificate and chain             | true        |
+| `verify_ssl`         | Check certificate and chain             | true        |
 | `auth_type`          | Authentication type                     | `anonymous` |
 | `debug_rest`         | Enable debugging of HTTP traffic        | false       |
 | `logger`             | Alternative logging class               |             |
@@ -176,7 +176,7 @@ require 'train-rest'
 # This will immediately do a login and add headers
 train  = Train.create('rest', {
             endpoint: 'https://10.20.30.40',
-            validate_ssl: false,
+            verify_ssl: false,
 
             auth_type: :redfish,
             username: 'iloadmin',
@@ -219,5 +219,28 @@ conn.close
 1. Run against the defiend targets via Chef Target Mode:
 
    ```shell
-   chef-client --local-mode --target 10.0.0.1 --runlist 'recipe[my-cookbook:setup]'
+   chef-client --local-mode --target 10.0.0.1 --runlist 'recipe[my-cookbook::setup]'
    ```
+
+## Use with Prerecorded API responses
+
+For testing during and after development, not all APIs can be used to verify your solution against.
+The VCR gem offers the possibility to hook into web requests and intercept them to play back canned
+responses.
+
+Please read the documentation of the VCR gem on how to record your API and the concepts like
+"cassettes", "libraries" and matchers.
+
+The following options are available in train-rest for this:
+
+| Option               | Explanation                             | Default      |
+| -------------------- | --------------------------------------- | ------------ |
+| `vcr_cassette`       | Name of the response file               | nil          |
+| `vcr_library`        | Directory to search responses in        | `vcr`        |
+| `vcr_match_on`       | Elements to match request by            | `method uri` |
+| `vcr_record`         | Recording mode                          | `none`       |
+| `vcr_hook_into`      | Base library for intercepting           | `webmock`    |
+
+VCR will only be required as a Gem and activated, if you supply a cassette name.
+
+You can use all these settings in your Chef Target Mode `credentials` file as well.

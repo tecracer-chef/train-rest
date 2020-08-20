@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.3.0
+
+- Add VCR options for mocking API responses in development/test
+
 ## Version 0.2.1
 
 - Fix RedFish handler for bare (non-prefixed) URLs
