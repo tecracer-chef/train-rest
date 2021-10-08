@@ -1,4 +1,6 @@
-require_relative "../auth_handler.rb"
+require "base64" unless defined?(Base64)
+
+require_relative "../auth_handler"
 
 module TrainPlugins
   module Rest
@@ -11,8 +13,9 @@ module TrainPlugins
 
       def auth_parameters
         {
-          user: options[:username],
-          password: options[:password],
+          headers: {
+            "Authorization" => format("Basic %s", Base64.encode64(options[:username] + ":" + options[:password]).chomp),
+          },
         }
       end
     end

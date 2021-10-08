@@ -1,4 +1,4 @@
-require "rubygems"
+require "rubygems" unless defined?(Gem)
 
 require "train-rest/connection"
 
@@ -10,7 +10,7 @@ module TrainPlugins
       option :endpoint, required: true
       option :verify_ssl, default: true
       option :proxy, default: nil
-      option :headers, default: nil
+      option :headers, default: {}
       option :timeout, default: 120
 
       option :auth_type, default: :anonymous

@@ -1,8 +1,12 @@
+---
 AllCops:
   TargetRubyVersion: 2.6
   Exclude:
     - Guardfile
     - Rakefile
+
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: false
 
 Style/RedundantSelf:
   Exclude:
