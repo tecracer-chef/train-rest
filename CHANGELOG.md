@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.3.2
+
+- Fix `patch`, `post` and `put` methods to accept keyword arguments properly
+
 ## Version 0.3.1
 
 - Fix basic authentication
