@@ -1,9 +1,9 @@
-require "json"
-require "ostruct"
-require "uri"
+require "json" unless defined?(JSON)
+require "ostruct" unless defined?(OpenStruct)
+require "uri" unless defined?(URI)
 
-require "rest-client"
-require "train"
+require "rest-client" unless defined?(RestClient)
+require "train" unless defined?(Train)
 
 module TrainPlugins
   module Rest
@@ -27,7 +27,7 @@ module TrainPlugins
       def setup_vcr
         return unless options[:vcr_cassette]
 
-        require "vcr"
+        require "vcr" unless defined?(VCR)
 
         # TODO: Starts from "/" :(
         library = options[:vcr_library]
@@ -62,10 +62,12 @@ module TrainPlugins
         components.to_s
       end
 
+      # Allow overwriting to refine the type of REST API
+      attr_writer :detected_os
+
       def inventory
-        # Faking it for Chef Target Mode only
         OpenStruct.new({
-          name: "rest",
+          name: @detected_os || "rest",
           release: TrainPlugins::Rest::VERSION,
           family_hierarchy: %w{rest api},
           family: "api",
@@ -98,8 +100,9 @@ module TrainPlugins
         parameters[:url] = full_url(path)
 
         if json_processing
+          parameters[:headers]["Accept"]       = "application/json"
           parameters[:headers]["Content-Type"] = "application/json"
-          parameters[:payload] = JSON.generate(data)
+          parameters[:payload] = JSON.generate(data) unless data.nil?
         else
           parameters[:payload] = data
         end
@@ -172,14 +175,14 @@ module TrainPlugins
       end
 
       def login
-        logger.info format("REST Login via %s authentication handler", auth_type.to_s) if auth_type != :anonymous
+        logger.info format("REST Login via %s authentication handler", auth_type.to_s) unless %i{anonymous basic}.include? auth_type
 
         auth_handler.options = options
         auth_handler.login
       end
 
       def logout
-        logger.info format("REST Logout via %s authentication handler", auth_type.to_s) if auth_type != :anonymous
+        logger.info format("REST Logout via %s authentication handler", auth_type.to_s) unless %i{anonymous basic}.include? auth_type
 
         auth_handler.logout
       end

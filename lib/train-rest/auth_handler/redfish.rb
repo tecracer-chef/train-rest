@@ -1,4 +1,4 @@
-require_relative "../auth_handler.rb"
+require_relative "../auth_handler"
 
 module TrainPlugins
   module Rest

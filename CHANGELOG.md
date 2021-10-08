@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.3.1
+
+- Fix basic authentication
+- Fix output of login/logout messages on basic authentication
+- Fix handling of GET requests and null payloads
+- Fix style
+
 ## Version 0.3.0
 
 - Add VCR options for mocking API responses in development/test
