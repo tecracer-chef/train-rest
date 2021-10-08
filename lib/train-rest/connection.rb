@@ -87,9 +87,8 @@ module TrainPlugins
       # User-faced API
 
       %i{get post put patch delete head}.each do |method|
-        define_method(method) do |path, *parameters|
-          # TODO: "warning: Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call"
-          request(path, method, *parameters)
+        define_method(method) do |path, **keywords|
+          request(path, method, **keywords)
         end
       end
 
