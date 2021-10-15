@@ -2,6 +2,7 @@
 
 ## Version 0.4.0
 
+- Add #override_headers to programmatically add more headers
 - Add new auth handlers for `Bearer`, `Authorization Apikey`, `Header`
 - Add some reference pointers for authentication
 

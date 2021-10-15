@@ -86,6 +86,9 @@ module TrainPlugins
 
       # User-faced API
 
+      # Allow (programmatically) setting additional headers apart from global transport configuration
+      attr_accessor :override_headers
+
       %i{get post put patch delete head}.each do |method|
         define_method(method) do |path, **keywords|
           request(path, method, **keywords)
@@ -106,7 +109,9 @@ module TrainPlugins
           parameters[:payload] = data
         end
 
-        parameters[:headers].merge! headers
+        # Merge override headers + request specific headers
+        parameters[:headers].merge!(override_headers || {})
+        parameters[:headers].merge!(headers)
         parameters.compact!
 
         logger.info format("[REST] => %s", parameters.to_s) if options[:debug_rest]
