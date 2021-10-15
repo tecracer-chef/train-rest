@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.4.0
+
+- Add new auth handlers for `Bearer`, `Authorization Apikey`, `Header`
+- Add some reference pointers for authentication
+
 ## Version 0.3.2
 
 - Fix `patch`, `post` and `put` methods to accept keyword arguments properly
