@@ -86,6 +86,9 @@ module TrainPlugins
 
       # User-faced API
 
+      # Allow (programmatically) setting additional headers apart from global transport configuration
+      attr_accessor :override_headers
+
       %i{get post put patch delete head}.each do |method|
         define_method(method) do |path, **keywords|
           request(path, method, **keywords)
@@ -93,6 +96,8 @@ module TrainPlugins
       end
 
       def request(path, method = :get, request_parameters: {}, data: nil, headers: {}, json_processing: true)
+        auth_handler.renew_session if auth_handler.renewal_needed?
+
         parameters = global_parameters.merge(request_parameters)
 
         parameters[:method] = method
@@ -106,7 +111,9 @@ module TrainPlugins
           parameters[:payload] = data
         end
 
-        parameters[:headers].merge! headers
+        # Merge override headers + request specific headers
+        parameters[:headers].merge!(override_headers || {})
+        parameters[:headers].merge!(headers)
         parameters.compact!
 
         logger.info format("[REST] => %s", parameters.to_s) if options[:debug_rest]
@@ -114,6 +121,27 @@ module TrainPlugins
 
         logger.info format("[REST] <= %s", response.to_s) if options[:debug_rest]
         transform_response(response, json_processing)
+      end
+
+      # Allow switching generic handlers for an API-specific one.
+      #
+      # New handler needs to be loaded prior and be derived from TrainPlugins::REST::AuthHandler.
+      def switch_auth_handler(new_handler)
+        return if active_auth_handler == new_handler
+
+        logout
+
+        options[:auth_type] = new_handler.to_sym
+        @auth_handler = nil
+
+        login
+      end
+
+      # Return active auth handler.
+      #
+      # @return [Symbol]
+      def active_auth_handler
+        options[:auth_type]
       end
 
       # Auth Handlers-faced API

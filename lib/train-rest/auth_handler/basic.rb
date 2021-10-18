@@ -4,11 +4,13 @@ require_relative "../auth_handler"
 
 module TrainPlugins
   module Rest
-    # Authentication via HTTP Basic Authentication
+    # Authentication via Basic Authentication.
+    #
+    # @see https://www.rfc-editor.org/rfc/rfc2617#section-4.1
     class Basic < AuthHandler
       def check_options
-        raise ArgumentError.new("Need username for Basic authentication") unless options[:username]
-        raise ArgumentError.new("Need password for Basic authentication") unless options[:password]
+        raise ArgumentError.new("Need :username for Basic authentication") unless options[:username]
+        raise ArgumentError.new("Need :password for Basic authentication") unless options[:password]
       end
 
       def auth_parameters

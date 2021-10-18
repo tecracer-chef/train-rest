@@ -13,7 +13,16 @@ module TrainPlugins
       #
       # @return [String]
       def self.name
-        self.to_s.split("::").last.downcase
+        class_name = self.to_s.split("::").last
+
+        convert_to_snake_case(class_name)
+      end
+
+      # List authentication handlers
+      #
+      # @return [Array] Classes derived from `AuthHandler`
+      def self.descendants
+        ObjectSpace.each_object(Class).select { |klass| klass < self }
       end
 
       # Store authenticator options and trigger validation
@@ -29,10 +38,18 @@ module TrainPlugins
       # @raise [ArgumentError] if options are not as needed
       def check_options; end
 
-      # Handle Login
+      # Handle login
       def login; end
 
-      # Handle Logout
+      # Handle session renewal
+      def renew_session; end
+
+      # Return if session renewal needs to happen soon
+      #
+      # @return [Boolean]
+      def renewal_needed?; end
+
+      # Handle logout
       def logout; end
 
       # Headers added to the rest-client call
@@ -50,11 +67,19 @@ module TrainPlugins
         { headers: auth_headers }
       end
 
-      # List authentication handlers
+      private
+
+      # Convert a class name to snake case.
       #
-      # @return [Array] Classes derived from `AuthHandler`
-      def self.descendants
-        ObjectSpace.each_object(Class).select { |klass| klass < self }
+      # @param [String] Class name
+      # @return [String]
+      # @see https://github.com/chef/chef/blob/main/lib/chef/mixin/convert_to_class_name.rb
+      def self.convert_to_snake_case(str)
+        str = str.dup
+        str.gsub!(/[A-Z]/) { |s| "_" + s }
+        str.downcase!
+        str.sub!(/^\_/, "")
+        str
       end
     end
   end

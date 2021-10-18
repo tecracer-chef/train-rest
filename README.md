@@ -34,7 +34,18 @@ Identifier: `auth_type: :anonymous`
 No actions for authentication, logging in/out or session handing are made. This
 assumes a public API.
 
-### Basic Authentication
+### Authtype Apikey
+
+This will inject a HTTP header `Authorization: Apikey xxxx` with the passed
+API key into requests.
+
+Identifier: `auth_type: :authtype_apikey`
+
+| Option               | Explanation                             | Default     |
+| -------------------- | --------------------------------------- | ----------- |
+| `apikey`             | API Key for authentication              | _required_  |
+
+### Basic (RFC 2617)
 
 Identifier: `auth_type: :basic`
 
@@ -45,6 +56,29 @@ Identifier: `auth_type: :basic`
 
 If you supply a `username` and a `password`, authentication will automatically
 switch to `basic`.
+
+### Bearer (RFC 7650)
+
+This will inject a HTTP header `Authorization: Bearer xxxx` with the passed
+token into requests.
+
+Identifier: `auth_type: :bearer`
+
+| Option               | Explanation                             | Default     |
+| -------------------- | --------------------------------------- | ----------- |
+| `token`              | Tokenb to pass                          | _required_  |
+
+### Header-based
+
+This will inject an additional HTTP header with the passed value. If no name
+for the header is passed, it will default to `X-API-Key`.
+
+Identifier: `auth_type: :header`
+
+| Option               | Explanation                             | Default     |
+| -------------------- | --------------------------------------- | ----------- |
+| `apikey`             | API Key for authentication              | _required_  |
+| `header`             | Name of the HTTP header to include      | `X-API-Key` |
 
 ### Redfish
 

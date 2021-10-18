@@ -7,5 +7,8 @@ require "train-rest/transport"
 require "train-rest/connection"
 
 require "train-rest/auth_handler/anonymous"
+require "train-rest/auth_handler/authtype-apikey"
+require "train-rest/auth_handler/header"
 require "train-rest/auth_handler/basic"
+require "train-rest/auth_handler/bearer"
 require "train-rest/auth_handler/redfish"

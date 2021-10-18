@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 0.4.0
+
+- Add session renewal capabilities for auth_handlers
+- Add interface to switch auth_handlers on-the-fly
+- Add #override_headers to programmatically add more headers
+- Add new auth handlers for `Bearer`, `Authorization Apikey`, `Header`
+- Add some reference pointers for authentication
+- Fix auth handler IDs for multi word class names
+
 ## Version 0.3.2
 
 - Fix `patch`, `post` and `put` methods to accept keyword arguments properly
