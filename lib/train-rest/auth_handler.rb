@@ -67,19 +67,21 @@ module TrainPlugins
         { headers: auth_headers }
       end
 
-      private
+      class << self
+        private
 
-      # Convert a class name to snake case.
-      #
-      # @param [String] Class name
-      # @return [String]
-      # @see https://github.com/chef/chef/blob/main/lib/chef/mixin/convert_to_class_name.rb
-      def self.convert_to_snake_case(str)
-        str = str.dup
-        str.gsub!(/[A-Z]/) { |s| "_" + s }
-        str.downcase!
-        str.sub!(/^\_/, "")
-        str
+        # Convert a class name to snake case.
+        #
+        # @param [String] Class name
+        # @return [String]
+        # @see https://github.com/chef/chef/blob/main/lib/chef/mixin/convert_to_class_name.rb
+        def convert_to_snake_case(str)
+          str = str.dup
+          str.gsub!(/[A-Z]/) { |s| "_" + s }
+          str.downcase!
+          str.sub!(/^\_/, "")
+          str
+        end
       end
     end
   end
