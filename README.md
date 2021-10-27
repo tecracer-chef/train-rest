@@ -8,8 +8,7 @@ Provides a transport to communicate easily with RESTful APIs.
 
 ## Installation
 
-You will have to build this gem yourself to install it as it is not yet on
-Rubygems.Org. For this there is a rake task which makes this a one-liner:
+The gem can be installed  from RubyGems or built locally with an included Rake task:
 
 ```bash
 rake install:local
@@ -66,7 +65,7 @@ Identifier: `auth_type: :bearer`
 
 | Option               | Explanation                             | Default     |
 | -------------------- | --------------------------------------- | ----------- |
-| `token`              | Tokenb to pass                          | _required_  |
+| `token`              | Token to pass                          | _required_  |
 
 ### Header-based
 
@@ -97,13 +96,13 @@ closing the transport cleanly.
 Known vendors which implement RedFish based management for their systems include
 HPE, Dell, IBM, SuperMicro, Lenovo, Huawei and others.
 
-## Debugging and use in Chef
+## Debugging and use in Chef Infra
 
 You can activate debugging by setting the `debug_rest` flag to `true'. Please
 note, that this will also log any confidential parts of HTTP traffic as well.
 
-For better integration into Chef custom resources, all REST debug output will
-be printed on `info` level. This allows debugging Chef resources without
+For better integration into Chef Infra custom resources, all REST debug output will
+be printed on `info` level. This allows debugging Chef Infra resources without
 crawling through all other debug output:
 
 ```ruby
@@ -123,7 +122,7 @@ throw an Exception.
 
 ### Generic Request
 
-The `request` methods allows to send free-form requests against any defined or
+The `request` method allows sending free-form requests against any defined or
 custom methods.
 
 `request(path, method = :get, request_parameters: {}, data: nil, headers: {},
@@ -224,7 +223,7 @@ conn   = train.connection
 conn.close
 ```
 
-## Use with Redfish, Your Custom Resources and Chef Target Mode
+## Use with Redfish, Your Custom Resources and Chef Infra Target Mode
 
 1. Set up a credentials file under `~/.chef/credentials` or `/etc/chef/credentials`:
 
@@ -237,7 +236,7 @@ conn.close
    auth_type = 'redfish'
    ```
 
-1. Configure Chef to use the REST transport in `client.rb`:
+1. Configure Chef Infra to use the REST transport in `client.rb`:
 
    ```toml
    target_mode.protocol = "rest"
@@ -250,7 +249,7 @@ conn.close
    provides :rest_resource, target_mode: true, platform: 'rest'
    ```
 
-1. Run against the defiend targets via Chef Target Mode:
+1. Run against the defined targets via Chef Infra Target Mode:
 
    ```shell
    chef-client --local-mode --target 10.0.0.1 --runlist 'recipe[my-cookbook::setup]'
@@ -259,7 +258,7 @@ conn.close
 ## Use with Prerecorded API responses
 
 For testing during and after development, not all APIs can be used to verify your solution against.
-The VCR gem offers the possibility to hook into web requests and intercept them to play back canned
+The VCR gem offers the possibility to hook into web requests and intercept them to playback canned
 responses.
 
 Please read the documentation of the VCR gem on how to record your API and the concepts like
@@ -277,4 +276,4 @@ The following options are available in train-rest for this:
 
 VCR will only be required as a Gem and activated, if you supply a cassette name.
 
-You can use all these settings in your Chef Target Mode `credentials` file as well.
+You can use all these settings in your Chef Infra Target Mode `credentials` file as well.
