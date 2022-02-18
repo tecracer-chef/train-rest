@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   ).reject { |f| File.directory?(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "train", "~> 3.0"
+  spec.add_dependency "train-core", "~> 3.0"
   spec.add_dependency "rest-client", "~> 2.1"
 
   spec.add_development_dependency "bump", "~> 0.9"
