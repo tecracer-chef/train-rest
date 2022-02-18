@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rest-client", "~> 2.1"
 
   spec.add_development_dependency "bump", "~> 0.9"
-  spec.add_development_dependency "chefstyle", "~> 0.14"
+  spec.add_development_dependency "chefstyle", "~> 2.2"
   spec.add_development_dependency "guard", "~> 2.16"
   spec.add_development_dependency "mdl", "~> 0.9"
   spec.add_development_dependency "rake", "~> 13.0"
