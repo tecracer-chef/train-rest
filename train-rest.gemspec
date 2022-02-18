@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["theinen@tecracer.de"]
   spec.summary       = "Train transport for REST"
   spec.description   = "Provides a transport to communicate easily with RESTful APIs."
-  spec.homepage      = "https://github.com/sgre-chef/train-rest"
+  spec.homepage      = "https://github.com/tecracer-chef/train-rest"
   spec.license       = "Apache-2.0"
 
   spec.files = %w{
