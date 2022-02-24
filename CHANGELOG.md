@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.4.1
+
+- Slim down dependencies
+- Fix URL in Gemspec
+
 ## Version 0.4.0
 
 - Add session renewal capabilities for auth_handlers
