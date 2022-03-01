@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.4.2
+
+- Add Apache2 license file
+
 ## Version 0.4.1
 
 - Slim down dependencies
