@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.4.1
+
+- Add Apache 2 license file
+
 ## Version 0.4.0
 
 - Add session renewal capabilities for auth_handlers
