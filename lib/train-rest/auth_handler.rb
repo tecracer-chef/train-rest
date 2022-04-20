@@ -67,6 +67,24 @@ module TrainPlugins
         { headers: auth_headers }
       end
 
+      # This Auth Handler will need payload, URI and headers, e.g. for signatures.
+      #
+      # @return  [Boolean]
+      def signature_based?
+        false
+      end
+
+      # Return headers based on payload signing.
+      #
+      # @param [Hash] data different types of data for processing
+      # @option data [String] :payload contents of the message body
+      # @option data [Hash] :headers existing headers to the request
+      # @option data [String] :url URL which will be requested
+      # @returns [Hash]
+      def process(payload: "", headers: {}, url: "")
+        {}
+      end
+
       class << self
         private
 

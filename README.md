@@ -79,6 +79,19 @@ Identifier: `auth_type: :header`
 | `apikey`             | API Key for authentication              | _required_  |
 | `header`             | Name of the HTTP header to include      | `X-API-Key` |
 
+### HMAC Signature
+
+Identifier: `auth_type: :hmac_signature`
+
+| Option               | Explanation                             | Default       |
+| -------------------- | --------------------------------------- | ------------- |
+| `hmac_secret`        | Shared secret to use for signing   on   | _required_    |
+| `header`             | Name of header to add                   | `X-Signature` |
+| `digest`             | OpenSSL Digest type supported by Ruby   | `SHA256`      |
+
+This will use the request body (payload) and sign it using HMAC. For a full list of
+supported digest, look at [the Ruby documentation](https://ruby-doc.org/stdlib-2.7.0/libdoc/openssl/rdoc/OpenSSL/Digest.html)
+
 ### Redfish
 
 Identifier: `auth_type: :redfish`

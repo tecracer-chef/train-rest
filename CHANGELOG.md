@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.5.0
+
+- Add new HMAC signature authorizer (#19)
+
 ## Version 0.4.2
 
 - Add Apache2 license file

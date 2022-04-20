@@ -98,10 +98,10 @@ module TrainPlugins
       def request(path, method = :get, request_parameters: {}, data: nil, headers: {}, json_processing: true)
         auth_handler.renew_session if auth_handler.renewal_needed?
 
-        parameters = global_parameters.merge(request_parameters)
-
         parameters[:method] = method
         parameters[:url] = full_url(path)
+
+        parameters = global_parameters.merge(request_parameters)
 
         if json_processing
           parameters[:headers]["Accept"]       = "application/json"
@@ -114,6 +114,20 @@ module TrainPlugins
         # Merge override headers + request specific headers
         parameters[:headers].merge!(override_headers || {})
         parameters[:headers].merge!(headers)
+
+        # Merge payload based headers (e.g. signature-based auth)
+        if auth_handler.signature_based?
+          auth_signature = auth_handler.process(
+                                payload: data,
+                                headers: parameters[:headers],
+                                uri: parameters[:url]
+                              )
+
+          parameters.merge!(auth_signature)
+        else
+          parameters.merge!(auth_parameters)
+        end
+
         parameters.compact!
 
         logger.info format("[REST] => %s", parameters.to_s) if options[:debug_rest]
@@ -159,8 +173,6 @@ module TrainPlugins
           proxy: options[:proxy],
           headers: options[:headers],
         }
-
-        params.merge!(auth_parameters)
 
         params
       end
