@@ -5,6 +5,7 @@ Provides a transport to communicate easily with RESTful APIs.
 ## Requirements
 
 - Gem `rest-client` in Version 2.1
+- Gem `awssig-v4`
 
 ## Installation
 
@@ -43,6 +44,18 @@ Identifier: `auth_type: :authtype_apikey`
 | Option               | Explanation                             | Default     |
 | -------------------- | --------------------------------------- | ----------- |
 | `apikey`             | API Key for authentication              | _required_  |
+
+### AWS Signature v4
+
+Identifier: `auth_type: :awsv4`
+
+| Option               | Explanation                             | Default       |
+| -------------------- | --------------------------------------- | ------------- |
+| `credentials`        | Type of credentials to use              | `access_keys` |
+| `access_key`         | ID of the access key                    | _required_    |
+| `secret_access_key`  | Secret part of the access key           | _required_    |
+
+Only `access_keys` are supported as a credential currently.
 
 ### Basic (RFC 2617)
 

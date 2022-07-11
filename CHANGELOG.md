@@ -2,7 +2,10 @@
 
 ## Version 0.5.0
 
+- Add new AWS v4 signature authorizer
 - Add new HMAC signature authorizer (#19)
+- Add VSCode Dev Container
+- Fix naming of authorizers which involve abbreviations
 
 ## Version 0.4.2
 

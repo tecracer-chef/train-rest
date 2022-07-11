@@ -98,10 +98,10 @@ module TrainPlugins
       def request(path, method = :get, request_parameters: {}, data: nil, headers: {}, json_processing: true)
         auth_handler.renew_session if auth_handler.renewal_needed?
 
+        parameters = global_parameters.merge(request_parameters)
+
         parameters[:method] = method
         parameters[:url] = full_url(path)
-
-        parameters = global_parameters.merge(request_parameters)
 
         if json_processing
           parameters[:headers]["Accept"]       = "application/json"
@@ -120,7 +120,8 @@ module TrainPlugins
           auth_signature = auth_handler.process(
                                 payload: data,
                                 headers: parameters[:headers],
-                                uri: parameters[:url]
+                                url: parameters[:url],
+                                method: method
                               )
 
           parameters.merge!(auth_signature)

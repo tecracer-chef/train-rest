@@ -27,7 +27,7 @@ module TrainPlugins
         true
       end
 
-      def process(payload: "", headers: {}, url: "")
+      def process(payload: "", headers: {}, url: "", method: nil)
         {
           headers: {
             header => OpenSSL::HMAC.hexdigest(digest, hmac_secret, payload)
