@@ -86,6 +86,11 @@ module TrainPlugins
         {}
       end
 
+      # Allow processing errors related to authentication.
+      #
+      # @param [RestClient::Exception] error raw error data
+      def process_error(_error); end
+
       class << self
         private
 

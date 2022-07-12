@@ -2,10 +2,13 @@
 
 ## Version 0.5.0
 
+- Add auth_handler specific error processing
 - Add new AWS v4 signature authorizer
 - Add new HMAC signature authorizer (#19)
 - Add VSCode Dev Container
-- Fix naming of authorizers which involve abbreviations
+- Fix merging of user-provided and auth_handler-derived headers
+- Fix missing prefix accessing `AuthHandler`
+- Fix naming of auth_handlers which involve abbreviations
 
 ## Version 0.4.2
 

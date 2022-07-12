@@ -1,4 +1,5 @@
 require 'aws-sigv4'
+require 'json'
 
 require_relative "../auth_handler"
 
@@ -27,16 +28,30 @@ module TrainPlugins
       end
 
       def process(payload: "", headers: {}, url: "", method: nil)
+        headers.merge! ({
+          'Accept-Encoding' => 'identity',
+          'User-Agent' => "train-rest/#{TrainPlugins::Rest::VERSION}",
+          'Content-Type' => 'application/x-amz-json-1.0'
+        })
+
         signature = signer(url).sign_request(
           http_method: method.to_s.upcase,
           url: url,
           headers: headers,
-          body: payload
+          body: payload.to_json
         )
 
         {
-          headers: signature.headers
+          headers: headers.merge(signature.headers)
         }
+      end
+
+      def process_error(error)
+        message = JSON.parse(error.response.to_s)
+
+        raise AuthenticationError.new(message["message"] || message["__type"])
+      rescue JSON::ParserError
+        raise AuthenticationError.new('Unknown authentication error')
       end
 
       private
@@ -58,11 +73,11 @@ module TrainPlugins
       end
 
       def service(url)
-        url.split('.').at(0)
+        url.delete_prefix('https://').split('.').at(0)
       end
 
       def region(url)
-        url.split('.').at(1)
+        url.delete_prefix('https://').split('.').at(1)
       end
 
       def signer(url)

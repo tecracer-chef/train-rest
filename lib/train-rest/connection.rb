@@ -124,9 +124,9 @@ module TrainPlugins
                                 method: method
                               )
 
-          parameters.merge!(auth_signature)
+          parameters[:headers].merge! auth_signature[:headers]
         else
-          parameters.merge!(auth_parameters)
+          parameters[:headers].merge! auth_parameters[:headers]
         end
 
         parameters.compact!
@@ -136,6 +136,9 @@ module TrainPlugins
 
         logger.info format("[REST] <= %s", response.to_s) if options[:debug_rest]
         transform_response(response, json_processing)
+
+      rescue RestClient::Exception => error
+        auth_handler.process_error(error)
       end
 
       # Allow switching generic handlers for an API-specific one.
@@ -200,7 +203,7 @@ module TrainPlugins
       attr_writer :auth_handler
 
       def auth_handler_classes
-        AuthHandler.descendants
+        ::TrainPlugins::Rest::AuthHandler.descendants
       end
 
       def auth_handlers
