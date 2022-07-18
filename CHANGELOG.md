@@ -2,6 +2,7 @@
 
 ## Version 0.5.0
 
+- Add proper processing of 400/401 errors
 - Add auth_handler specific error processing
 - Add new AWS v4 signature authorizer
 - Add new HMAC signature authorizer (#19)

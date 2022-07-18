@@ -10,6 +10,10 @@ module TrainPlugins
         access_keys
       ].freeze
 
+      SIGNED_HEADERS = %w[
+        content-type host x-amz-date x-amz-target
+      ].freeze
+
       def check_options
         options[:credentials] ||= "access_keys"
 
@@ -34,10 +38,14 @@ module TrainPlugins
           'Content-Type' => 'application/x-amz-json-1.0'
         })
 
+        signed_headers = headers.select do |name, _value|
+          SIGNED_HEADERS.include? name.downcase
+        end
+
         signature = signer(url).sign_request(
           http_method: method.to_s.upcase,
           url: url,
-          headers: headers,
+          headers: signed_headers,
           body: payload.to_json
         )
 
@@ -47,11 +55,14 @@ module TrainPlugins
       end
 
       def process_error(error)
+        raise AuthenticationError.new("Authentication failed: #{error.response.to_s.chop}") if error.response.code == 401
+        raise BadRequest.new("Bad request: #{error.response.to_s.chop}") if error.response.code == 400
+
         message = JSON.parse(error.response.to_s)
 
         raise AuthenticationError.new(message["message"] || message["__type"])
-      rescue JSON::ParserError
-        raise AuthenticationError.new('Unknown authentication error')
+      rescue JSON::ParserError => e
+        raise AuthenticationError.new('Authentication failed to parse JSON: ' + e.message)
       end
 
       private
