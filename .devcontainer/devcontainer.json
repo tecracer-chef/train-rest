@@ -1,24 +1,24 @@
 {
-	"name": "Ruby",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"args": {
-			"VARIANT": "3",
-			"INSTALL_NODE": "false"
-		}
-	},
-	"mounts": [
+  "name": "Ruby",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "VARIANT": "3",
+      "INSTALL_NODE": "false"
+    }
+  },
+  "mounts": [
     "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,readonly,type=bind",
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly,type=bind",
-    "target=/home/reviewer/.aws/cli/cache,type=tmpfs,tmpfs-mode=1777"
+    "target=/home/vscode/.aws/cli/cache,type=tmpfs,tmpfs-mode=1777"
   ],
-	"extensions": [
+  "extensions": [
     "editorconfig.editorconfig",
     "rebornix.ruby",
     "redhat.vscode-yaml",
     "VisualStudioExptTeam.vscodeintellicode",
     "wingrunr21.vscode-ruby"
-	],
+  ],
   "remoteUser": "vscode",
   "remoteEnv": {
     "PATH": "/home/vscode/bin:/home/vscode/.local/bin:${containerEnv:PATH}",

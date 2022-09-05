@@ -162,10 +162,19 @@ module TrainPlugins
         options[:auth_type]
       end
 
+      attr_writer :auth_handler
+
       # Auth Handlers-faced API
 
       def auth_parameters
         auth_handler.auth_parameters
+      end
+
+      def auth_handler
+        desired_handler = auth_handler_classes.detect { |handler| handler.name == auth_type.to_s }
+        raise NameError.new(format("Authentication handler %s not found", auth_type.to_s)) unless desired_handler
+
+        @auth_handler ||= desired_handler.new(self)
       end
 
       private
@@ -200,21 +209,12 @@ module TrainPlugins
         :basic if options[:username] && options[:password]
       end
 
-      attr_writer :auth_handler
-
       def auth_handler_classes
         ::TrainPlugins::Rest::AuthHandler.descendants
       end
 
       def auth_handlers
         auth_handler_classes.map { |handler| handler.name.to_sym }
-      end
-
-      def auth_handler
-        desired_handler = auth_handler_classes.detect { |handler| handler.name == auth_type.to_s }
-        raise NameError.new(format("Authentication handler %s not found", auth_type.to_s)) unless desired_handler
-
-        @auth_handler ||= desired_handler.new(self)
       end
 
       def login

@@ -49,13 +49,17 @@ Identifier: `auth_type: :authtype_apikey`
 
 Identifier: `auth_type: :awsv4`
 
-| Option               | Explanation                             | Default       |
-| -------------------- | --------------------------------------- | ------------- |
-| `credentials`        | Type of credentials to use              | `access_keys` |
-| `access_key`         | ID of the access key                    | _required_    |
-| `secret_access_key`  | Secret part of the access key           | _required_    |
+| Option              | Explanation                   | Default                  |
+| ------------------- | ----------------------------- | ------------------------ |
+| `credentials`       | Type of credentials to use    | `access_keys`            |
+| `access_key`        | ID of the access key          | ENV: `ACCESS_KEY_ID`     |
+| `secret_access_key` | Secret part of the access key | ENV: `SECRET_ACCESS_KEY` |
 
-Only `access_keys` are supported as a credential currently.
+Only `access_keys` are supported as a credential currently. Support for other types,
+like EC2 roles, is planned.
+
+Access key and secret access key are pulled from the mentioned environment variables,
+if they are not provided.
 
 ### Basic (RFC 2617)
 

@@ -42,6 +42,8 @@ module TrainPlugins
           SIGNED_HEADERS.include? name.downcase
         end
 
+	@url = url
+
         signature = signer(url).sign_request(
           http_method: method.to_s.upcase,
           url: url,
@@ -62,7 +64,15 @@ module TrainPlugins
 
         raise AuthenticationError.new(message["message"] || message["__type"])
       rescue JSON::ParserError => e
-        raise AuthenticationError.new('Authentication failed to parse JSON: ' + e.message)
+        raise AuthenticationError.new(error.response.to_s)
+      end
+
+      def access_key
+        options[:access_key] || ENV['AWS_ACCESS_KEY_ID']
+      end
+
+      def region(url = default_url)
+        url.delete_prefix('https://').split('.').at(1)
       end
 
       private
@@ -71,12 +81,12 @@ module TrainPlugins
         options[:credentials]
       end
 
-      def access_keys?
-        credentials == 'access_keys'
+      def default_url
+        options[:endpoint]
       end
 
-      def access_key
-        options[:access_key] || ENV['AWS_ACCESS_KEY_ID']
+      def access_keys?
+        credentials == 'access_keys'
       end
 
       def secret_access_key
@@ -85,10 +95,6 @@ module TrainPlugins
 
       def service(url)
         url.delete_prefix('https://').split('.').at(0)
-      end
-
-      def region(url)
-        url.delete_prefix('https://').split('.').at(1)
       end
 
       def signer(url)
