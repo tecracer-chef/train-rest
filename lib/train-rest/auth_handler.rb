@@ -67,6 +67,30 @@ module TrainPlugins
         { headers: auth_headers }
       end
 
+      # This Auth Handler will need payload, URI and headers, e.g. for signatures.
+      #
+      # @return  [Boolean]
+      def signature_based?
+        false
+      end
+
+      # Return headers based on payload signing.
+      #
+      # @param [Hash] data different types of data for processing
+      # @option data [String] :payload contents of the message body
+      # @option data [Hash] :headers existing headers to the request
+      # @option data [String] :url URL which will be requested
+      # @option data [Symbol] :method Method to execute
+      # @returns [Hash]
+      def process(payload: "", headers: {}, url: "", method: nil)
+        {}
+      end
+
+      # Allow processing errors related to authentication.
+      #
+      # @param [RestClient::Exception] error raw error data
+      def process_error(_error); end
+
       class << self
         private
 
@@ -77,7 +101,8 @@ module TrainPlugins
         # @see https://github.com/chef/chef/blob/main/lib/chef/mixin/convert_to_class_name.rb
         def convert_to_snake_case(str)
           str = str.dup
-          str.gsub!(/[A-Z]/) { |s| "_" + s }
+          str.gsub!(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+          str.gsub!(/([a-z\d])([A-Z])/, '\1_\2')
           str.downcase!
           str.sub!(/^\_/, "")
           str

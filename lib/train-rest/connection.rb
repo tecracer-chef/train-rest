@@ -114,6 +114,21 @@ module TrainPlugins
         # Merge override headers + request specific headers
         parameters[:headers].merge!(override_headers || {})
         parameters[:headers].merge!(headers)
+
+        # Merge payload based headers (e.g. signature-based auth)
+        if auth_handler.signature_based?
+          auth_signature = auth_handler.process(
+                                payload: data,
+                                headers: parameters[:headers],
+                                url: parameters[:url],
+                                method: method
+                              )
+
+          parameters[:headers].merge! auth_signature[:headers]
+        else
+          parameters[:headers].merge! auth_parameters[:headers]
+        end
+
         parameters.compact!
 
         logger.info format("[REST] => %s", parameters.to_s) if options[:debug_rest]
@@ -121,6 +136,9 @@ module TrainPlugins
 
         logger.info format("[REST] <= %s", response.to_s) if options[:debug_rest]
         transform_response(response, json_processing)
+
+      rescue RestClient::Exception => error
+        auth_handler.process_error(error)
       end
 
       # Allow switching generic handlers for an API-specific one.
@@ -144,10 +162,19 @@ module TrainPlugins
         options[:auth_type]
       end
 
+      attr_writer :auth_handler
+
       # Auth Handlers-faced API
 
       def auth_parameters
         auth_handler.auth_parameters
+      end
+
+      def auth_handler
+        desired_handler = auth_handler_classes.detect { |handler| handler.name == auth_type.to_s }
+        raise NameError.new(format("Authentication handler %s not found", auth_type.to_s)) unless desired_handler
+
+        @auth_handler ||= desired_handler.new(self)
       end
 
       private
@@ -159,8 +186,6 @@ module TrainPlugins
           proxy: options[:proxy],
           headers: options[:headers],
         }
-
-        params.merge!(auth_parameters)
 
         params
       end
@@ -184,21 +209,12 @@ module TrainPlugins
         :basic if options[:username] && options[:password]
       end
 
-      attr_writer :auth_handler
-
       def auth_handler_classes
-        AuthHandler.descendants
+        ::TrainPlugins::Rest::AuthHandler.descendants
       end
 
       def auth_handlers
         auth_handler_classes.map { |handler| handler.name.to_sym }
-      end
-
-      def auth_handler
-        desired_handler = auth_handler_classes.detect { |handler| handler.name == auth_type.to_s }
-        raise NameError.new(format("Authentication handler %s not found", auth_type.to_s)) unless desired_handler
-
-        @auth_handler ||= desired_handler.new(self)
       end
 
       def login

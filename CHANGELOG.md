@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 0.5.0
+
+- Add proper processing of 400/401 errors
+- Add auth_handler specific error processing
+- Add new AWS v4 signature authorizer
+- Add new HMAC signature authorizer (#19)
+- Add VSCode Dev Container
+- Fix merging of user-provided and auth_handler-derived headers
+- Fix missing prefix accessing `AuthHandler`
+- Fix naming of auth_handlers which involve abbreviations
+
 ## Version 0.4.2
 
 - Add Apache2 license file

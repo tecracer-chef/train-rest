@@ -1,0 +1,32 @@
+{
+  "name": "Ruby",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "VARIANT": "3",
+      "INSTALL_NODE": "false"
+    }
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,readonly,type=bind",
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly,type=bind",
+    "target=/home/vscode/.aws/cli/cache,type=tmpfs,tmpfs-mode=1777"
+  ],
+  "extensions": [
+    "editorconfig.editorconfig",
+    "rebornix.ruby",
+    "redhat.vscode-yaml",
+    "VisualStudioExptTeam.vscodeintellicode",
+    "wingrunr21.vscode-ruby"
+  ],
+  "remoteUser": "vscode",
+  "remoteEnv": {
+    "PATH": "/home/vscode/bin:/home/vscode/.local/bin:${containerEnv:PATH}",
+
+    "AWS_ACCESS_KEY_ID": "${localEnv:AWS_ACCESS_KEY_ID}",
+    "AWS_SECRET_ACCESS_KEY": "${localEnv:AWS_SECRET_ACCESS_KEY}",
+    "AWS_REGION": "${localEnv:AWS_REGION}",
+    "AWS_SESSION_TOKEN": "${localEnv:AWS_SESSION_TOKEN}"
+  },
+  "postAttachCommand": "bundle config set --local with 'development' && awsume-configure && direnv allow ${containerWorkspaceFolder} || true"
+}

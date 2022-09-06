@@ -5,6 +5,7 @@ Provides a transport to communicate easily with RESTful APIs.
 ## Requirements
 
 - Gem `rest-client` in Version 2.1
+- Gem `awssig-v4`
 
 ## Installation
 
@@ -44,6 +45,22 @@ Identifier: `auth_type: :authtype_apikey`
 | -------------------- | --------------------------------------- | ----------- |
 | `apikey`             | API Key for authentication              | _required_  |
 
+### AWS Signature v4
+
+Identifier: `auth_type: :awsv4`
+
+| Option              | Explanation                   | Default                  |
+| ------------------- | ----------------------------- | ------------------------ |
+| `credentials`       | Type of credentials to use    | `access_keys`            |
+| `access_key`        | ID of the access key          | ENV: `ACCESS_KEY_ID`     |
+| `secret_access_key` | Secret part of the access key | ENV: `SECRET_ACCESS_KEY` |
+
+Only `access_keys` are supported as a credential currently. Support for other types,
+like EC2 roles, is planned.
+
+Access key and secret access key are pulled from the mentioned environment variables,
+if they are not provided.
+
 ### Basic (RFC 2617)
 
 Identifier: `auth_type: :basic`
@@ -78,6 +95,19 @@ Identifier: `auth_type: :header`
 | -------------------- | --------------------------------------- | ----------- |
 | `apikey`             | API Key for authentication              | _required_  |
 | `header`             | Name of the HTTP header to include      | `X-API-Key` |
+
+### HMAC Signature
+
+Identifier: `auth_type: :hmac_signature`
+
+| Option               | Explanation                             | Default       |
+| -------------------- | --------------------------------------- | ------------- |
+| `hmac_secret`        | Shared secret to use for signing   on   | _required_    |
+| `header`             | Name of header to add                   | `X-Signature` |
+| `digest`             | OpenSSL Digest type supported by Ruby   | `SHA256`      |
+
+This will use the request body (payload) and sign it using HMAC. For a full list of
+supported digest, look at [the Ruby documentation](https://ruby-doc.org/stdlib-2.7.0/libdoc/openssl/rdoc/OpenSSL/Digest.html)
 
 ### Redfish
 
